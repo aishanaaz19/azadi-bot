@@ -9,6 +9,10 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Serve frontend files
+app.use(express.static("public"));
+
+// API endpoint
 app.post("/send-message", async (req, res) => {
   const { userMessage } = req.body;
 
@@ -35,6 +39,11 @@ app.post("/send-message", async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Something went wrong" });
   }
+});
+
+// Root route (optional, since index.html will load automatically)
+app.get("/", (req, res) => {
+  res.sendFile("index.html", { root: "public" });
 });
 
 app.listen(3000, () => console.log("Server running on port 3000"));
