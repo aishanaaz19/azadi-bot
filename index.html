@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Independence Day AI Chatbot</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #ff9933, white, #138808);
+      font-family: Arial, sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      height: 100vh; margin: 0;
+    }
+    .chatbox {
+      background: rgba(255,255,255,0.9);
+      width: 60%; padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      overflow-y: auto;
+      height: 70vh;
+    }
+    .input-area {
+      display: flex; margin-top: 10px; width: 60%;
+    }
+    input {
+      flex: 1; padding: 10px;
+      border: none; border-radius: 5px;
+      margin-right: 5px;
+    }
+    button {
+      background-color: #ff9933;
+      border: none; padding: 10px 15px;
+      border-radius: 5px; cursor: pointer;
+      color: white; font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🇮🇳 Independence Day AI Chatbot 🇮🇳</h1>
+  <div class="chatbox" id="chatbox"></div>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const message = input.value;
+      if (!message) return;
+
+      document.getElementById("chatbox").innerHTML += `<p><b>You:</b> ${message}</p>`;
+      input.value = "";
+
+      const response = await fetch("http://localhost:5000/send-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userMessage: message })
+      });
+
+      const data = await response.json();
+      document.getElementById("chatbox").innerHTML += `<p><b>Bot:</b> ${data.reply}</p>`;
+    }
+  </script>
+</body>
+</html>
