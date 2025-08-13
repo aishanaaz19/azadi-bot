@@ -50,7 +50,7 @@
       document.getElementById("chatbox").innerHTML += `<p><b>You:</b> ${message}</p>`;
       input.value = "";
 
-      const response = await fetch("http://localhost:5000/send-message", {
+      const response = await fetch("/send-message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userMessage: message })
