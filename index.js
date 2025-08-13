@@ -1,19 +1,3 @@
-import express from "express";
-import fetch from "node-fetch";
-import cors from "cors";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-
-dotenv.config();
-const app = express();
-
-app.use(cors());
-app.use(bodyParser.json());
-
-// Serve frontend files
-app.use(express.static("public"));
-
-// API endpoint
 app.post("/send-message", async (req, res) => {
   const { userMessage } = req.body;
 
@@ -35,18 +19,18 @@ app.post("/send-message", async (req, res) => {
     );
 
     const data = await response.json();
+    console.log("Gemini API Response:", data); // 🔍 Debug in Render logs
+
+    if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
+      return res.status(500).json({
+        error: "Invalid response from Gemini API",
+        details: data
+      });
+    }
+
     res.json({ reply: data.candidates[0].content.parts[0].text });
   } catch (err) {
-    console.error(err);
+    console.error("Server Error:", err);
     res.status(500).json({ error: "Something went wrong" });
   }
 });
-
-// Root route (optional, since index.html will load automatically)
-app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: "public" });
-});
-
-const PORT = process.env.PORT || 3000; // 3000 for local dev
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
